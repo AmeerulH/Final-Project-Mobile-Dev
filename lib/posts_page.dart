@@ -3,9 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:localstore/localstore.dart';
 import 'package:sign_up_flutter/create_post_page.dart';
+import 'package:sign_up_flutter/post_details.dart';
 import 'package:web_socket_channel/io.dart';
 import 'dart:convert';
-import 'package:sign_up_flutter/class/user.dart';
+import 'package:characters/characters.dart';
 
 class PostPage extends StatelessWidget {
   const PostPage({Key? key}) : super(key: key);
@@ -70,124 +71,194 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      body: ListView(
-        children: [
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.lightBlue,
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.add_box_rounded),
-                            color: Colors.white,
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CreatePostPage()),
-                              );
-                            },
-                          ),
+      body: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Colors.lightBlue,
+                          shape: CircleBorder(),
                         ),
-                        Container(
-                          child: Row(
-                            children: [
-                              Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Colors.lightBlue,
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(Icons.sort_by_alpha),
-                                  color: Colors.white,
-                                  onPressed: () {},
-                                ),
-                              ),
-                              Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Colors.lightBlue,
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(Icons.favorite),
-                                  color: Colors.white,
-                                  onPressed: () {},
-                                ),
-                              ),
-                            ],
-                          ),
+                        child: IconButton(
+                          icon: const Icon(Icons.add_box_rounded),
+                          color: Colors.white,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const CreatePostPage()),
+                            );
+                          },
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      Container(
+                        child: Row(
+                          children: [
+                            Ink(
+                              decoration: const ShapeDecoration(
+                                color: Colors.lightBlue,
+                                shape: CircleBorder(),
+                              ),
+                              child: IconButton(
+                                icon: const Icon(Icons.sort_by_alpha),
+                                color: Colors.white,
+                                onPressed: () {},
+                              ),
+                            ),
+                            Ink(
+                              decoration: const ShapeDecoration(
+                                color: Colors.lightBlue,
+                                shape: CircleBorder(),
+                              ),
+                              child: IconButton(
+                                icon: const Icon(Icons.favorite),
+                                color: Colors.white,
+                                onPressed: () {},
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              posts.isNotEmpty
-                  ? Expanded(
-                      child: ListView.builder(
-                          itemCount: posts.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.black,
-                                ),
-                                color: Colors.amberAccent,
+            ),
+            posts.isNotEmpty
+                ? Expanded(
+                    child: ListView.builder(
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                              color: Colors.amberAccent,
+                            ),
+                            height: 120,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PostDetails(
+                                          title: posts[index]['title'],
+                                          description: posts[index]
+                                              ['description'],
+                                          url: posts[index]['url'])),
+                                );
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 10),
+                                child: Column(
                                   children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(left: 10),
-                                      child: Column(
-                                        children: [
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '${posts[index]["title"]}',
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                    Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Image(
+                                              image: NetworkImage(Uri.tryParse(
+                                                              posts[index]
+                                                                  ['image'])!
+                                                          .hasAbsolutePath ||
+                                                      posts[index]
+                                                          .containsKey('image')
+                                                  ? '${posts[index]['image']}'
+                                                  : 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                                              height: 100,
+                                              width: 100,
+                                            ),
+                                            Container(
+                                              width: 100,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '${posts[index]["title"]}',
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    '${posts[index]["description"]}',
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    '${posts[index]["date"].toString().characters.take(9)}',
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
                                               ),
-                                              // Text(
-                                              //   '${posts[index]["description"]}',
-                                              //   style: const TextStyle(
-                                              //       fontWeight:
-                                              //           FontWeight.bold),
-                                              // ),
-                                              // Text(
-                                              //   'Date: ${posts[index]["date"]}',
-                                              //   style: const TextStyle(
-                                              //       fontWeight:
-                                              //           FontWeight.bold),
-                                              // ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                            ),
+                                            Container(
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Ink(
+                                                    decoration:
+                                                        const ShapeDecoration(
+                                                      color: Colors.lightBlue,
+                                                      shape: CircleBorder(),
+                                                    ),
+                                                    child: IconButton(
+                                                      icon: const Icon(
+                                                          Icons.delete_forever),
+                                                      color: Colors.white,
+                                                      onPressed: () {},
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Ink(
+                                                    decoration:
+                                                        const ShapeDecoration(
+                                                      color: Colors.lightBlue,
+                                                      shape: CircleBorder(),
+                                                    ),
+                                                    child: IconButton(
+                                                      icon: const Icon(
+                                                          Icons.favorite),
+                                                      color: Colors.white,
+                                                      onPressed: () {},
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ),
-                            );
-                          }))
-                  : Container()
-            ],
-          ),
-        ],
+                            ),
+                          );
+                        }))
+                : Container()
+          ],
+        ),
       ),
     );
   }
