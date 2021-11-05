@@ -56,14 +56,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void sortAlpha() {
     if (sortType == 'asc') {
-      setState(() {
-        posts.sort((a, b) => a.value['title'].compareTo(b.value['title']));
+      posts.sort((a, b) {
+        var aTitle = a['title'];
+        var bTitle = b['title'];
+
+        return aTitle.compareTo(bTitle);
       });
       sortType == 'dsc';
     } else if (sortType == 'dsc') {
       if (sortType == 'asc') {
-        setState(() {
-          posts.sort((a, b) => b.value['title'].compareTo(a.value['title']));
+        posts.sort((b, a) {
+          var aTitle = a['title'];
+          var bTitle = b['title'];
+          return bTitle.compareTo(aTitle);
         });
       }
       sortType == 'asc';
@@ -255,7 +260,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                               FontWeight.bold),
                                                                     ),
                                                                     Text(
-                                                                      '${posts[index]["description"]}',
+                                                                      posts[index]["description"].length >
+                                                                              20
+                                                                          ? '${posts[index]["description"].toString().characters.take(20)}...'
+                                                                          : '${posts[index]["description"]}',
                                                                       style: const TextStyle(
                                                                           fontWeight:
                                                                               FontWeight.bold),
