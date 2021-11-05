@@ -53,13 +53,14 @@ class _MyHomePageState extends State<MyHomePage> {
   void login(name) {
     channel.stream.listen((message) {
       final decodedMessage = jsonDecode(message);
+      print(decodedMessage);
       setState(() {
         Name = decodedMessage['type'];
       });
       channel.sink.close();
     });
 
-    channel.sink.add('{"type": "sign_in","data": {"name": "$name"}');
+    channel.sink.add('{"type": "sign_in", "data": {"name": "$name"}}');
   }
 
   @override
@@ -150,6 +151,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                 children: [
                                   ElevatedButton(
                                     child: const Text('Submit'),
+                                    style: ElevatedButton.styleFrom(
+                                        fixedSize: const Size(300, 20)),
                                     onPressed:
                                         _formKey.currentState?.validate() ??
                                                 false
@@ -182,26 +185,5 @@ class _MyHomePageState extends State<MyHomePage> {
                 }),
           ],
         ));
-  }
-}
-
-bool findEmail(arr, email) {
-  bool b = false;
-  arr.forEach((key, value) => {
-        if (value.email == email) {b = true} else {b = false}
-      });
-
-  return b;
-}
-
-extension ExtTodo on User {
-  Future save() async {
-    final _db = Localstore.instance;
-    return _db.collection('users').doc(id).set(toMap());
-  }
-
-  Future delete() async {
-    final _db = Localstore.instance;
-    return _db.collection('users').doc(id).delete();
   }
 }

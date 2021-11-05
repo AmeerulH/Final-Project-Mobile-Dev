@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:localstore/localstore.dart';
+import 'package:sign_up_flutter/posts_page.dart';
 import 'package:web_socket_channel/io.dart';
 import 'dart:convert';
 import 'package:sign_up_flutter/class/user.dart';
@@ -24,6 +25,20 @@ class PostDetails extends StatelessWidget {
     return MaterialApp(
         home: Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PostPage()),
+              );
+            },
+          )
+        ],
         title: const Text('Details'),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -47,7 +62,9 @@ class PostDetails extends StatelessWidget {
             padding:
                 const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 10),
             child: Image(
-              image: NetworkImage(url),
+              image: NetworkImage(Uri.parse(url).isAbsolute
+                  ? url
+                  : 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
             ),
           ),
           Container(

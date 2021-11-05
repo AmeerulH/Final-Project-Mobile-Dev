@@ -215,7 +215,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                         _formKey.currentState?.validate() ??
                                                 false
                                             ? () {
-                                                print(state);
+                                                print(context
+                                                    .read<MainCubit>()
+                                                    .getName());
                                                 // createPost(state);
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(

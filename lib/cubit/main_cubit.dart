@@ -8,7 +8,7 @@ class MainCubit extends Cubit<String> {
     print(state);
   }
 
-  void getName() {
-    emit(state);
+  String getName() {
+    return state;
   }
 }
