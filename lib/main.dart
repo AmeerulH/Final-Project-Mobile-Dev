@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sign_up_flutter/create_post_page.dart';
 import 'package:localstore/localstore.dart';
 import 'package:sign_up_flutter/posts_page.dart';
@@ -8,6 +9,8 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'dart:convert';
 import 'package:sign_up_flutter/class/user.dart';
+
+import 'cubit/main_cubit.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,13 +23,18 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: MyHomePage(title: 'Hhello'));
+    return MaterialApp(
+        home: BlocProvider(
+      create: (context) => MainCubit(),
+      child: const MyHomePage(),
+    ));
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
+  const MyHomePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -88,70 +96,91 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        body: Container(
-          child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  const Text(
-                    'Username',
-                    style: TextStyle(
-                      fontSize: 40,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    child: TextFormField(
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.account_circle),
-                        hintText: 'Name',
-                        border: OutlineInputBorder(),
-                        suffixIcon: Icon(
-                          Icons.error,
-                        ),
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Enter Username: ';
-                        }
-                        return null;
-                      },
-                      onChanged: (String? value) {
-                        setState(() {
-                          Name = value!;
-                        });
-                      },
-                    ),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.all(20),
-                      child: ElevatedButton(
-                        child: const Text('Submit'),
-                        // style: ElevatedButton.styleFrom(
-                        //     primary: _formKey.currentState?.validate() ?? false
-                        //         ? Colors.blueAccent
-                        //         : Colors.blueGrey),
-                        onPressed: _formKey.currentState?.validate() ?? false
-                            ? () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Successfully Signed Up!'),
+        body: ListView(
+          children: [
+            BlocBuilder<MainCubit, String>(
+                bloc: context.read<MainCubit>(),
+                builder: (context, state) {
+                  return Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(top: 10, left: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: const [
+                                Text(
+                                  'Username: ',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w700,
                                   ),
-                                );
-                                login(Name);
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                prefixIcon: Icon(Icons.account_circle),
+                                hintText: 'Name',
+                                border: OutlineInputBorder(),
+                              ),
+                              validator: (String? value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Enter Username: ';
+                                }
+                                return null;
+                              },
+                              onChanged: (String? value) {
+                                setState(() {
+                                  Name = value!;
+                                });
+                              },
+                            ),
+                          ),
+                          Container(
+                              padding: const EdgeInsets.all(20),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    child: const Text('Submit'),
+                                    onPressed:
+                                        _formKey.currentState?.validate() ??
+                                                false
+                                            ? () {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                        'Successfully Signed Up!'),
+                                                  ),
+                                                );
+                                                context
+                                                    .read<MainCubit>()
+                                                    .login(Name);
+                                                login(Name);
 
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const PostPage()),
-                                );
-                              }
-                            : null,
-                      ))
-                ],
-              )),
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const PostPage()),
+                                                );
+                                              }
+                                            : null,
+                                  ),
+                                ],
+                              ))
+                        ],
+                      ));
+                }),
+          ],
         ));
   }
 }

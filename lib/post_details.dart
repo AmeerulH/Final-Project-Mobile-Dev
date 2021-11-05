@@ -41,26 +41,49 @@ class PostDetails extends StatelessWidget {
       ),
       body: Container(
           child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image(
-            image: NetworkImage(url),
-            height: 100,
-            width: 100,
-          ),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 40,
-              color: Colors.black,
-              fontWeight: FontWeight.w700,
+          Padding(
+            padding:
+                const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 10),
+            child: Image(
+              image: NetworkImage(url),
             ),
           ),
-          Text(
-            description,
-            style: const TextStyle(
-              fontSize: 40,
-              color: Colors.black,
-              fontWeight: FontWeight.w700,
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20.0, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 40,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20.0, right: 20),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      description,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
