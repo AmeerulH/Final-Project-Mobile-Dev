@@ -50,18 +50,18 @@ class _MyHomePageState extends State<MyHomePage> {
   final _items = <String, User>{};
   StreamSubscription<Map<String, dynamic>>? _subscription;
 
-  // void login(name) {
-  //   channel.stream.listen((message) {
-  //     final decodedMessage = jsonDecode(message);
-  //     print(decodedMessage);
-  //     setState(() {
-  //       Name = decodedMessage['type'];
-  //     });
-  //     channel.sink.close();
-  //   });
+  void loginChannel() {
+    channel.stream.listen((message) {
+      final decodedMessage = jsonDecode(message);
+      print(decodedMessage);
+      // setState(() {
+      //   Name = decodedMessage['type'];
+      // });
+      // channel.sink.close();
+    });
 
-  //   channel.sink.add('{"type": "sign_in", "data": {"name": "$name"}}');
-  // }
+    // channel.sink.add('{"type": "sign_in", "data": {"name": "$name"}}');
+  }
 
   @override
   void initState() {
@@ -164,6 +164,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                                         'Successfully Signed Up!'),
                                                   ),
                                                 );
+                                                context
+                                                    .read<MainCubit>()
+                                                    .openChannel();
                                                 context
                                                     .read<MainCubit>()
                                                     .login(Name);

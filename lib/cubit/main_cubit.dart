@@ -5,21 +5,38 @@ import 'package:web_socket_channel/io.dart';
 
 class MainCubit extends Cubit<String> {
   MainCubit() : super('');
+  List posts = [];
+  String Name = '';
+  dynamic decodedMessage;
+
   final channel =
       IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
 
-  void login(name) {
+  void openChannel() {
     channel.stream.listen((message) {
-      final decodedMessage = jsonDecode(message);
+      decodedMessage = jsonDecode(message);
       print(decodedMessage);
+      channel.sink.close();
     });
+  }
 
-    channel.sink.add('{"type": "sign_in", "data": {"name": "$name"}}');
+  void login(name) {
+    Name = name;
     emit(name);
+    channel.sink.add('{"type": "sign_in", "data": {"name": "$name"}}');
   }
 
   void getPosts() {
     channel.sink.add('{"type": "get_posts"}');
+  }
+
+  void delete(_id) {
+    channel.sink.add('{"type": "delete_post", "data": {"postId": "$_id"}}');
+  }
+
+  void createPost(title, description, url) {
+    channel.sink.add(
+        '{"type": "create_post", "data": {"title": "$title", "description": "$description", "image": "$url"}}');
   }
 
   String getName() {

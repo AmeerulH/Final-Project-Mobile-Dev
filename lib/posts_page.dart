@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sign_up_flutter/about_page.dart';
 import 'package:sign_up_flutter/create_post_page.dart';
 import 'package:sign_up_flutter/cubit/main_cubit.dart';
 import 'package:sign_up_flutter/post_details.dart';
@@ -42,17 +43,17 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         posts = decodedMessage['data']['posts'];
       });
-
+      channel.sink.close();
       // print(posts);
     });
 
     channel.sink.add('{"type": "get_posts"}');
   }
 
-  void deletePost(name, id) {
-    channel.sink.add('{"type": "sign_in", "data": {"name": "$name"}}');
-    channel.sink.add('{"type": "delete_post", "data": {"postId": "$id"}}');
-  }
+  // void deletePost(name, id) {
+  //   channel.sink.add('{"type": "sign_in", "data": {"name": "$name"}}');
+  //   channel.sink.add('{"type": "delete_post", "data": {"postId": "$id"}}');
+  // }
 
   void sortAlpha() {
     if (sortType == 'asc') {
@@ -111,22 +112,51 @@ class _MyHomePageState extends State<MyHomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Colors.lightBlue,
-                          shape: CircleBorder(),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.add_box_rounded),
-                          color: Colors.white,
-                          onPressed: () {
-                            channel.sink.close();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const CreatePostPage()),
-                            );
-                          },
+                      Container(
+                        child: Row(
+                          children: [
+                            Ink(
+                              decoration: const ShapeDecoration(
+                                color: Colors.lightBlue,
+                                shape: CircleBorder(),
+                              ),
+                              child: IconButton(
+                                icon: const Icon(Icons.add_box_rounded),
+                                color: Colors.white,
+                                onPressed: () {
+                                  channel.sink.close();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CreatePostPage()),
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Ink(
+                              decoration: const ShapeDecoration(
+                                color: Colors.lightBlue,
+                                shape: CircleBorder(),
+                              ),
+                              child: IconButton(
+                                icon: const Icon(Icons.settings),
+                                color: Colors.white,
+                                onPressed: () {
+                                  channel.sink.close();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AboutPage()),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
@@ -313,16 +343,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                 color: Colors
                                                                     .black,
                                                                 onPressed: () {
-                                                                  print(
-                                                                      'delete');
-                                                                  deletePost(
-                                                                      state,
-                                                                      posts[index]
+                                                                  context
+                                                                      .read<
+                                                                          MainCubit>()
+                                                                      .delete(posts[
+                                                                              index]
                                                                           [
                                                                           '_id']);
-                                                                  print(posts[
-                                                                          index]
-                                                                      ['_id']);
                                                                 },
                                                               ),
                                                             ),

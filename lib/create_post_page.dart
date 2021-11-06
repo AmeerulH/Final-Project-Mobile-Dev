@@ -211,29 +211,32 @@ class _MyHomePageState extends State<MyHomePage> {
                                     style: ElevatedButton.styleFrom(
                                         fixedSize: const Size(150, 20)),
                                     child: const Text('Submit'),
-                                    onPressed:
-                                        _formKey.currentState?.validate() ??
-                                                false
-                                            ? () {
-                                                print(context
-                                                    .read<MainCubit>()
-                                                    .getName());
-                                                // createPost(state);
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                        'Successfully Posted!'),
-                                                  ),
-                                                );
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const PostPage()),
-                                                );
-                                              }
-                                            : null,
+                                    onPressed: _formKey.currentState
+                                                ?.validate() ??
+                                            false
+                                        ? () {
+                                            context
+                                                .read<MainCubit>()
+                                                .openChannel();
+                                            context
+                                                .read<MainCubit>()
+                                                .createPost(
+                                                    title, description, url);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    'Successfully Posted!'),
+                                              ),
+                                            );
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const PostPage()),
+                                            );
+                                          }
+                                        : null,
                                   ),
                                   const SizedBox(width: 10),
                                   ElevatedButton(
