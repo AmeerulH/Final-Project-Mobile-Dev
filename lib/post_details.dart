@@ -47,8 +47,8 @@ class PostDetails extends StatelessWidget {
           decoration: const BoxDecoration(
             gradient: LinearGradient(
                 colors: [
-                  Color(0xFF3366FF),
-                  Color(0xFF00CCFF),
+                  Color(0xFF9B2226),
+                  Color(0XFFEE9B00),
                 ],
                 begin: FractionalOffset(0.0, 0.0),
                 end: FractionalOffset(1.0, 0.0),
@@ -58,57 +58,68 @@ class PostDetails extends StatelessWidget {
         ),
       ),
       body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                colors: [
+                  Color(0XFFE9D8A6),
+                  Color(0xFF001219),
+                ],
+                begin: FractionalOffset(0.0, 8.0),
+                end: FractionalOffset(0.0, 0.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
+          ),
           child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 10),
-            child: Image(
-              image: NetworkImage(Uri.parse(url).isAbsolute
-                  ? url
-                  : 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-            ),
-          ),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 40,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 20, left: 20, right: 20, bottom: 10),
+                child: Image(
+                  image: NetworkImage(Uri.parse(url).isAbsolute
+                      ? url
+                      : 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                ),
               ),
-            ),
-          ),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20),
-              child: Row(
-                children: [
-                  Flexible(
-                    child: Text(
-                      description,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 40,
+                          color: Color(0xFFE9D8A6),
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                      textAlign: TextAlign.justify,
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
-      )),
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          description,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.justify,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )),
     ));
   }
 }

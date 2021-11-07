@@ -8,17 +8,21 @@ import 'dart:convert';
 import 'package:sign_up_flutter/class/user.dart';
 
 class AboutPage extends StatelessWidget {
-  const AboutPage({Key? key}) : super(key: key);
+  const AboutPage({Key? key, required this.name}) : super(key: key);
+
+  final String name;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: MyHomePage());
+    return MaterialApp(home: MyHomePage(name: name));
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({Key? key, required this.name}) : super(key: key);
+
+  final String name;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -41,10 +45,11 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.white,
             ),
             onPressed: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const PostPage()),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PostPageFinal(name: widget.name)),
+              );
             },
           )
         ],
@@ -53,8 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
           decoration: const BoxDecoration(
             gradient: LinearGradient(
                 colors: [
-                  Color(0xFF3366FF),
-                  Color(0xFF00CCFF),
+                  Color(0xFF9B2226),
+                  Color(0XFFEE9B00),
                 ],
                 begin: FractionalOffset(0.0, 0.0),
                 end: FractionalOffset(1.0, 0.0),
@@ -69,8 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
           decoration: const BoxDecoration(
             gradient: LinearGradient(
                 colors: [
-                  Color(0xFF3366FF),
-                  Color(0xFF00CCFF),
+                  Color(0xFF9B2226),
+                  Color(0XFFEE9B00),
                 ],
                 begin: FractionalOffset(0.0, 0.0),
                 end: FractionalOffset(1.0, 0.0),

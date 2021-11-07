@@ -79,6 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -87,8 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                   colors: [
-                    Color(0xFF3366FF),
-                    Color(0xFF00CCFF),
+                    Color(0xFF9B2226),
+                    Color(0XFFEE9B00),
                   ],
                   begin: FractionalOffset(0.0, 0.0),
                   end: FractionalOffset(1.0, 0.0),
@@ -163,7 +168,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ElevatedButton(
                                       child: const Text('Submit'),
                                       style: ElevatedButton.styleFrom(
-                                          fixedSize: const Size(300, 20)),
+                                        fixedSize: const Size(300, 20),
+                                        primary: const Color(0XFFEE9B00),
+                                      ),
                                       onPressed:
                                           _formKey.currentState?.validate() ??
                                                   false

@@ -65,6 +65,11 @@ class _MyHomePageState extends State<CreatePostPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -73,8 +78,8 @@ class _MyHomePageState extends State<CreatePostPage> {
           decoration: const BoxDecoration(
             gradient: LinearGradient(
                 colors: [
-                  Color(0xFF3366FF),
-                  Color(0xFF00CCFF),
+                  Color(0xFF9B2226),
+                  Color(0XFFEE9B00),
                 ],
                 begin: FractionalOffset(0.0, 0.0),
                 end: FractionalOffset(1.0, 0.0),
@@ -92,6 +97,13 @@ class _MyHomePageState extends State<CreatePostPage> {
                     key: _formKey,
                     child: Column(
                       children: [
+                        Container(
+                          padding: const EdgeInsets.only(
+                              top: 10, left: 10, right: 10),
+                          child: const Image(
+                              image: NetworkImage(
+                                  'https://dbdzm869oupei.cloudfront.net/img/photomural/preview/49057.png')),
+                        ),
                         Container(
                           padding: const EdgeInsets.all(10),
                           child: Column(
@@ -206,55 +218,57 @@ class _MyHomePageState extends State<CreatePostPage> {
                           ),
                         ),
                         Container(
-                            padding: const EdgeInsets.all(20),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      fixedSize: const Size(150, 20)),
-                                  child: const Text('Submit'),
-                                  onPressed: _formKey.currentState
-                                              ?.validate() ??
-                                          false
-                                      ? () {
-                                          context
-                                              .read<MainCubit>()
-                                              .login(widget.name);
-                                          context.read<MainCubit>().createPost(
-                                              title, description, url);
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content:
-                                                  Text('Successfully Posted!'),
-                                            ),
-                                          );
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    PostPageFinal(
-                                                        name: widget.name)),
-                                          );
-                                        }
-                                      : null,
-                                ),
-                                const SizedBox(width: 10),
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        fixedSize: const Size(150, 20)),
-                                    child: const Text('Cancel'),
-                                    onPressed: () {
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(150, 20),
+                                  primary: const Color(
+                                    0XFFAE2012,
+                                  )),
+                              child: const Text('Submit'),
+                              onPressed: _formKey.currentState?.validate() ??
+                                      false
+                                  ? () {
+                                      context
+                                          .read<MainCubit>()
+                                          .login(widget.name);
+                                      context
+                                          .read<MainCubit>()
+                                          .createPost(title, description, url);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Successfully Posted!'),
+                                        ),
+                                      );
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => PostPageFinal(
                                                 name: widget.name)),
                                       );
-                                    }),
-                              ],
-                            ))
+                                    }
+                                  : null,
+                            ),
+                            const SizedBox(width: 10),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(150, 20),
+                                  primary: const Color(0XFFEE9B00),
+                                ),
+                                child: const Text('Cancel'),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PostPageFinal(name: widget.name)),
+                                  );
+                                }),
+                          ],
+                        ))
                       ],
                     ));
               }),
