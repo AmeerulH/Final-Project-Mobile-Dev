@@ -41,10 +41,10 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.white,
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const PostPage()),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const PostPage()),
+              // );
             },
           )
         ],
@@ -64,57 +64,94 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: Container(
-          padding: const EdgeInsets.all(10),
+          margin:
+              const EdgeInsets.only(top: 40, right: 20, bottom: 40, left: 20),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                colors: [
+                  Color(0xFF3366FF),
+                  Color(0xFF00CCFF),
+                ],
+                begin: FractionalOffset(0.0, 0.0),
+                end: FractionalOffset(1.0, 0.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    'About',
-                    style: TextStyle(
-                      fontSize: 40,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
               Container(
                 margin: const EdgeInsets.only(
                     left: 10, right: 10, top: 5, bottom: 5),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [
-                        Color(0xFF3366FF),
-                        Color(0xFF00CCFF),
-                      ],
-                      begin: FractionalOffset(0.0, 0.0),
-                      end: FractionalOffset(1.0, 0.0),
-                      stops: [0.0, 1.0],
-                      tileMode: TileMode.clamp),
-                ),
-                height: 500,
                 child: Container(
                   padding: const EdgeInsets.all(10),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Column(
+                      Container(
+                        child: Row(
+                          children: const [
+                            Text(
+                              'About',
+                              style: TextStyle(
+                                fontSize: 40,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                          child: Row(
                         children: const [
                           Flexible(
                             child: Text(
-                              'This project is about...',
+                              'This project was made for the Mobile Development team within Deriv. The goal was to develop an app that could call an API, where we can receive posts, post posts and delete posts. These posts have a title, a description and an image url.',
                               style: TextStyle(
+                                fontSize: 20,
                                 color: Colors.black,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w500,
                               ),
+                              textAlign: TextAlign.justify,
                             ),
                           ),
                         ],
-                      ),
+                      )),
+                      const SizedBox(height: 10),
+                      Container(
+                          child: Row(
+                        children: const [
+                          Flexible(
+                            child: Text(
+                              'This app has 5 different pages. A User Name Page, a Create Post Page, a Posts Page, a Posts Details Page, and finally an About Page',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                        ],
+                      )),
+                      const SizedBox(height: 10),
+                      Container(
+                          child: Row(
+                        children: const [
+                          Flexible(
+                            child: Text(
+                              'This app should be fully functional, however, not everything will be fulfilled. Hope you enjoy the application!',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                        ],
+                      )),
                     ],
                   ),
                 ),

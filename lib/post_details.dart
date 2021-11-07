@@ -13,11 +13,13 @@ class PostDetails extends StatelessWidget {
     required this.title,
     required this.description,
     required this.url,
+    required this.name,
   }) : super(key: key);
 
   final String title;
   final String description;
   final String url;
+  final String name;
 
   // This widget is the root of your application.
   @override
@@ -34,7 +36,8 @@ class PostDetails extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const PostPage()),
+                MaterialPageRoute(
+                    builder: (context) => PostPageFinal(name: name)),
               );
             },
           )
@@ -97,6 +100,7 @@ class PostDetails extends StatelessWidget {
                         fontSize: 20,
                         color: Colors.black,
                       ),
+                      textAlign: TextAlign.justify,
                     ),
                   ),
                 ],

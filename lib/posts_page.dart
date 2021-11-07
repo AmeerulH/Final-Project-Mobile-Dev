@@ -10,8 +10,9 @@ import 'package:web_socket_channel/io.dart';
 import 'dart:convert';
 import 'package:characters/characters.dart';
 
-class PostPage extends StatelessWidget {
-  const PostPage({Key? key}) : super(key: key);
+class PostPageFinal extends StatelessWidget {
+  const PostPageFinal({Key? key, required this.name}) : super(key: key);
+  final String name;
 
   // This widget is the root of your application.
   @override
@@ -19,23 +20,28 @@ class PostPage extends StatelessWidget {
     return MaterialApp(
         home: BlocProvider(
       create: (context) => MainCubit(),
-      child: const MyHomePage(),
+      child: PostPage(name: name),
     ));
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class PostPage extends StatefulWidget {
+  const PostPage({Key? key, required this.name}) : super(key: key);
+
+  final String name;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<PostPage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<PostPage> {
   final channel =
       IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
   List posts = [];
   String sortType = 'asc';
+
+  var _scrollController = ScrollController();
+  var _listCount = 15;
 
   void getPosts() {
     channel.stream.listen((message) {
@@ -43,7 +49,6 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         posts = decodedMessage['data']['posts'];
       });
-      channel.sink.close();
       // print(posts);
     });
 
@@ -76,10 +81,37 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void getData() async {
+    // posts = await BlocProvider.of<MainCubit>(context).openChannel()['data']
+    //     ['posts'];
+    BlocProvider.of<MainCubit>(context).openChannel();
+    BlocProvider.of<MainCubit>(context).getPosts();
+  }
+
   @override
   void initState() {
     super.initState();
+    // getData();
+    setState(() {});
     getPosts();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.atEdge) {
+        if (_scrollController.position.pixels == 0) {
+        } else {
+          setState(() {
+            _listCount += 10;
+          });
+          // print("reach end " + _listCap.toString());
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -129,7 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const CreatePostPage()),
+                                            CreatePageFinal(name: widget.name)),
                                   );
                                 },
                               ),
@@ -197,193 +229,201 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             ),
-            BlocBuilder<MainCubit, String>(
+            BlocBuilder<MainCubit, dynamic>(
                 bloc: context.read<MainCubit>(),
                 builder: (context, state) {
                   return posts.isNotEmpty
                       ? Expanded(
                           child: ListView.builder(
-                              itemCount: posts.length,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  margin: const EdgeInsets.only(
-                                      left: 10, right: 10, top: 5, bottom: 5),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.black,
-                                    ),
-                                    color: Colors.amberAccent,
-                                  ),
-                                  height: 120,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      channel.sink.close();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => PostDetails(
-                                                title: posts[index]['title'],
-                                                description: posts[index]
-                                                    ['description'],
-                                                url: posts[index]['image'])),
-                                      );
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(left: 10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                          controller: _scrollController,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: const EdgeInsets.only(
+                                  left: 10, right: 10, top: 5, bottom: 5),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black,
+                                ),
+                                color: Colors.amberAccent,
+                              ),
+                              height: 120,
+                              child: GestureDetector(
+                                onTap: () {
+                                  print(posts[index]['author']);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PostDetails(
+                                            title: posts[index]['title'],
+                                            description: posts[index]
+                                                ['description'],
+                                            url: posts[index]['image'],
+                                            name: widget.name)),
+                                  );
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Column(
                                         children: [
-                                          Column(
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Container(
-                                                    child: Row(
+                                              Container(
+                                                child: Row(
+                                                  children: [
+                                                    Image(
+                                                      image: NetworkImage(Uri.parse(
+                                                                      posts[index]
+                                                                          [
+                                                                          'image'])
+                                                                  .isAbsolute &&
+                                                              posts[index]
+                                                                  .containsKey(
+                                                                      'image')
+                                                          ? '${posts[index]['image']}'
+                                                          : 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                                                      height: 100,
+                                                      width: 100,
+                                                    ),
+                                                    Container(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 10,
+                                                              right: 10),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Container(
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  posts[index]["title"]
+                                                                              .length >
+                                                                          20
+                                                                      ? '${posts[index]["title"].toString().characters.take(20)}...'
+                                                                      : '${posts[index]["title"]}',
+                                                                  style: const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                                Text(
+                                                                  posts[index]["description"]
+                                                                              .length >
+                                                                          20
+                                                                      ? '${posts[index]["description"].toString().characters.take(20)}...'
+                                                                      : '${posts[index]["description"]}',
+                                                                  style: const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 50,
+                                                          ),
+                                                          Container(
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  '${posts[index]["date"].toString().characters.take(10)}',
+                                                                  style: const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Column(
                                                       children: [
-                                                        Image(
-                                                          image: NetworkImage(Uri.parse(
-                                                                          posts[index]
-                                                                              [
-                                                                              'image'])
-                                                                      .isAbsolute &&
-                                                                  posts[index]
-                                                                      .containsKey(
-                                                                          'image')
-                                                              ? '${posts[index]['image']}'
-                                                              : 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                                          height: 100,
-                                                          width: 100,
+                                                        Ink(
+                                                          child: IconButton(
+                                                            icon: const Icon(Icons
+                                                                .delete_forever),
+                                                            color: Colors.black,
+                                                            onPressed: () {
+                                                              context
+                                                                  .read<
+                                                                      MainCubit>()
+                                                                  .login(widget
+                                                                      .name);
+                                                              context
+                                                                  .read<
+                                                                      MainCubit>()
+                                                                  .delete(posts[
+                                                                          index]
+                                                                      ['_id']);
+                                                            },
+                                                          ),
                                                         ),
-                                                        Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 10,
-                                                                  right: 10),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Container(
-                                                                child: Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Text(
-                                                                      '${posts[index]["title"]}',
-                                                                      style: const TextStyle(
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                    ),
-                                                                    Text(
-                                                                      posts[index]["description"].length >
-                                                                              20
-                                                                          ? '${posts[index]["description"].toString().characters.take(20)}...'
-                                                                          : '${posts[index]["description"]}',
-                                                                      style: const TextStyle(
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 50,
-                                                              ),
-                                                              Container(
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Text(
-                                                                      '${posts[index]["date"].toString().characters.take(10)}',
-                                                                      style: const TextStyle(
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        Ink(
+                                                          child: IconButton(
+                                                            icon: const Icon(
+                                                                Icons.favorite),
+                                                            color: Colors.black,
+                                                            onPressed: () {
+                                                              print(
+                                                                  'favourite');
+                                                            },
                                                           ),
                                                         ),
                                                       ],
                                                     ),
-                                                  ),
-                                                  Container(
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        Column(
-                                                          children: [
-                                                            Ink(
-                                                              child: IconButton(
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .delete_forever),
-                                                                color: Colors
-                                                                    .black,
-                                                                onPressed: () {
-                                                                  context
-                                                                      .read<
-                                                                          MainCubit>()
-                                                                      .delete(posts[
-                                                                              index]
-                                                                          [
-                                                                          '_id']);
-                                                                },
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 20,
-                                                            ),
-                                                            Ink(
-                                                              child: IconButton(
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .favorite),
-                                                                color: Colors
-                                                                    .black,
-                                                                onPressed: () {
-                                                                  print(
-                                                                      'favourite');
-                                                                },
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
+                                                  ],
+                                                ),
+                                              )
                                             ],
                                           ),
                                         ],
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                );
-                              }))
+                                ),
+                              ),
+                            );
+                          },
+                          itemCount: _listCount,
+                        ))
                       : Container();
                 })
           ],

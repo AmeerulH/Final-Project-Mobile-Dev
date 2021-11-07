@@ -99,93 +99,108 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: ListView(
           children: [
-            BlocBuilder<MainCubit, String>(
-                bloc: context.read<MainCubit>(),
-                builder: (context, state) {
-                  return Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(top: 10, left: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  'Username: ',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w700,
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      padding:
+                          const EdgeInsets.only(top: 20, right: 20, left: 20),
+                      child: const Image(
+                        image: NetworkImage(
+                            'https://pbs.twimg.com/media/FBvRFA7XEAI6ogm.jpg'),
+                      )),
+                  BlocBuilder<MainCubit, dynamic>(
+                      bloc: context.read<MainCubit>(),
+                      builder: (context, state) {
+                        return Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.only(
+                                      top: 10, left: 20, right: 20),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: const [
+                                      Text(
+                                        'Username ',
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                prefixIcon: Icon(Icons.account_circle),
-                                hintText: 'Name',
-                                border: OutlineInputBorder(),
-                              ),
-                              validator: (String? value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Enter Username: ';
-                                }
-                                return null;
-                              },
-                              onChanged: (String? value) {
-                                setState(() {
-                                  Name = value!;
-                                });
-                              },
-                            ),
-                          ),
-                          Container(
-                              padding: const EdgeInsets.all(20),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(
-                                    child: const Text('Submit'),
-                                    style: ElevatedButton.styleFrom(
-                                        fixedSize: const Size(300, 20)),
-                                    onPressed:
-                                        _formKey.currentState?.validate() ??
-                                                false
-                                            ? () {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                        'Successfully Signed Up!'),
-                                                  ),
-                                                );
-                                                context
-                                                    .read<MainCubit>()
-                                                    .openChannel();
-                                                context
-                                                    .read<MainCubit>()
-                                                    .login(Name);
-                                                // login(Name);
-
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const PostPage()),
-                                                );
-                                              }
-                                            : null,
+                                Container(
+                                  padding: const EdgeInsets.only(
+                                      top: 10, left: 20, right: 20, bottom: 10),
+                                  child: TextFormField(
+                                    decoration: const InputDecoration(
+                                      prefixIcon: Icon(Icons.account_circle),
+                                      hintText: 'Username: ',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    validator: (String? value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Enter Username: ';
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        Name = value!;
+                                      });
+                                    },
                                   ),
-                                ],
-                              ))
-                        ],
-                      ));
-                }),
+                                ),
+                                Container(
+                                    child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                      child: const Text('Submit'),
+                                      style: ElevatedButton.styleFrom(
+                                          fixedSize: const Size(300, 20)),
+                                      onPressed:
+                                          _formKey.currentState?.validate() ??
+                                                  false
+                                              ? () {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                          'Successfully Signed Up!'),
+                                                    ),
+                                                  );
+                                                  context
+                                                      .read<MainCubit>()
+                                                      .openChannel();
+                                                  context
+                                                      .read<MainCubit>()
+                                                      .login(Name);
+                                                  // login(Name);
+
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            PostPageFinal(
+                                                                name: Name)),
+                                                  );
+                                                }
+                                              : null,
+                                    ),
+                                  ],
+                                ))
+                              ],
+                            ));
+                      }),
+                ],
+              ),
+            ),
           ],
         ));
   }
