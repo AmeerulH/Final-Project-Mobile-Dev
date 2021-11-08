@@ -72,13 +72,20 @@ class PostDetails extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
+              Container(
                 padding: const EdgeInsets.only(
                     top: 20, left: 20, right: 20, bottom: 10),
-                child: Image(
-                  image: NetworkImage(Uri.parse(url).isAbsolute
-                      ? url
-                      : 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                child: Card(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Image(
+                    image: NetworkImage(Uri.parse(url).isAbsolute
+                        ? url
+                        : 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               Container(
