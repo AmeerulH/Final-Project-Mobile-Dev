@@ -49,6 +49,11 @@ class _MyHomePageState extends State<PostPage> {
       final decodedMessage = jsonDecode(message);
       setState(() {
         posts = decodedMessage['data']['posts'];
+        posts.sort((b, a) {
+          var aTitle = a['date'];
+          var bTitle = b['date'];
+          return aTitle.compareTo(bTitle);
+        });
       });
       // print(posts);
     });
@@ -65,22 +70,28 @@ class _MyHomePageState extends State<PostPage> {
 
   void sortAlpha() {
     if (sortType == true) {
-      posts.sort((a, b) {
-        var aTitle = a['title'];
-        var bTitle = b['title'];
-        print(aTitle);
-        return aTitle.compareTo(bTitle);
+      setState(() {
+        posts.sort((a, b) {
+          var aTitle = a['title'];
+          var bTitle = b['title'];
+          return aTitle.compareTo(bTitle);
+        });
+        sortType = false;
       });
 
-      sortType = false;
+      print(posts);
       print(sortType);
     } else if (sortType == false) {
-      posts.sort((b, a) {
-        var aTitle = a['title'];
-        var bTitle = b['title'];
-        return bTitle.compareTo(aTitle);
+      setState(() {
+        posts.sort((b, a) {
+          var aTitle = a['title'];
+          var bTitle = b['title'];
+          return aTitle.compareTo(bTitle);
+        });
+        sortType = true;
       });
-      sortType = true;
+
+      print(posts);
       print(sortType);
     }
   }
@@ -90,6 +101,13 @@ class _MyHomePageState extends State<PostPage> {
     //     ['posts'];
     BlocProvider.of<MainCubit>(context).openChannel();
     BlocProvider.of<MainCubit>(context).getPosts();
+  }
+
+  void scrollDown() {
+    final double end = _scrollController.position.maxScrollExtent;
+
+    _scrollController.animateTo(end,
+        duration: Duration(seconds: 5), curve: Curves.easeIn);
   }
 
   @override
@@ -198,6 +216,13 @@ class _MyHomePageState extends State<PostPage> {
                       Container(
                         child: Row(
                           children: [
+                            // ElevatedButton(
+                            //   style: ElevatedButton.styleFrom(),
+                            //   onPressed: () {
+                            //     scrollDown();
+                            //   },
+                            //   child: const Text('Latest'),
+                            // ),
                             Ink(
                               decoration: const ShapeDecoration(
                                 color: Color(0XFF001219),
@@ -291,19 +316,32 @@ class _MyHomePageState extends State<PostPage> {
                                                   Container(
                                                     child: Row(
                                                       children: [
-                                                        Image(
-                                                          image: NetworkImage(Uri.parse(
-                                                                          posts[index]
-                                                                              [
-                                                                              'image'])
-                                                                      .isAbsolute &&
-                                                                  posts[index]
-                                                                      .containsKey(
-                                                                          'image')
-                                                              ? '${posts[index]['image']}'
-                                                              : 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                                                        Container(
                                                           height: 100,
                                                           width: 100,
+                                                          child: Card(
+                                                            clipBehavior: Clip
+                                                                .antiAliasWithSaveLayer,
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                            ),
+                                                            child: Image(
+                                                              image: NetworkImage(Uri.parse(posts[index]
+                                                                              [
+                                                                              'image'])
+                                                                          .isAbsolute &&
+                                                                      posts[index]
+                                                                          .containsKey(
+                                                                              'image')
+                                                                  ? '${posts[index]['image']}'
+                                                                  : 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
                                                         ),
                                                         Container(
                                                           padding:
@@ -385,26 +423,36 @@ class _MyHomePageState extends State<PostPage> {
                                                           children: [
                                                             Ink(
                                                               child: IconButton(
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .delete_forever),
-                                                                color: const Color(
-                                                                    0XFF001219),
-                                                                onPressed: () {
-                                                                  context
-                                                                      .read<
-                                                                          MainCubit>()
-                                                                      .login(widget
-                                                                          .name);
-                                                                  context
-                                                                      .read<
-                                                                          MainCubit>()
-                                                                      .delete(posts[
-                                                                              index]
-                                                                          [
-                                                                          '_id']);
-                                                                },
-                                                              ),
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .delete_forever),
+                                                                  color: const Color(
+                                                                      0XFF001219),
+                                                                  onPressed: widget
+                                                                              .name ==
+                                                                          posts[index]
+                                                                              [
+                                                                              'author']
+                                                                      ? () {
+                                                                          context
+                                                                              .read<MainCubit>()
+                                                                              .openChannel();
+                                                                          context
+                                                                              .read<MainCubit>()
+                                                                              .login(widget.name);
+                                                                          context
+                                                                              .read<MainCubit>()
+                                                                              .delete(posts[index]['_id']);
+                                                                          channel
+                                                                              .sink
+                                                                              .close();
+                                                                          Navigator
+                                                                              .push(
+                                                                            context,
+                                                                            MaterialPageRoute(builder: (context) => PostPageFinal(name: widget.name)),
+                                                                          );
+                                                                        }
+                                                                      : null),
                                                             ),
                                                             const SizedBox(
                                                               height: 20,

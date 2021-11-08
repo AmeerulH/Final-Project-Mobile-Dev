@@ -16,6 +16,7 @@ class MainCubit extends Cubit<dynamic> {
     channel.stream.listen((message) {
       decodedMessage = jsonDecode(message);
       print(decodedMessage);
+      channel.sink.close();
     });
   }
 

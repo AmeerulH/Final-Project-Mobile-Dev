@@ -87,12 +87,14 @@ class PostDetails extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 40,
-                          color: Color(0xFFE9D8A6),
-                          fontWeight: FontWeight.w700,
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 40,
+                            color: Color(0xFFE9D8A6),
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ],

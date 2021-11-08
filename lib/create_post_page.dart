@@ -44,16 +44,14 @@ class _MyHomePageState extends State<CreatePostPage> {
   String url = '';
   List posts = [];
 
-  void createPost(username) {
+  void createPost(title, description, url) {
     channel.stream.listen((message) {
       final decodedMessage = jsonDecode(message);
-      // setState(() {
-      //   Name = decodedMessage['type'];
-      // });
+      print(decodedMessage);
       channel.sink.close();
     });
 
-    channel.sink.add('{"type": "sign_in", "data": {"name": "$username"}}');
+    channel.sink.add('{"type": "sign_in", "data": {"name": "${widget.name}"}}');
     channel.sink.add(
         '{"type": "create_post", "data": {"title": "$title", "description": "$description", "image": "$url"}}');
   }
@@ -62,11 +60,6 @@ class _MyHomePageState extends State<CreatePostPage> {
   void initState() {
     super.initState();
     // getData();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -231,6 +224,10 @@ class _MyHomePageState extends State<CreatePostPage> {
                               onPressed: _formKey.currentState?.validate() ??
                                       false
                                   ? () {
+                                      // print(
+                                      //     '${widget.name}, $title, $description, $url');
+                                      // createPost(title, description, url);
+                                      context.read<MainCubit>().openChannel();
                                       context
                                           .read<MainCubit>()
                                           .login(widget.name);
