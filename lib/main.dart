@@ -46,10 +46,9 @@ class _MyHomePageState extends State<MyHomePage> {
       IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
   String Name = '';
   List posts = [];
-  final _db = Localstore.instance;
-  final _items = <String, User>{};
-  StreamSubscription<Map<String, dynamic>>? _subscription;
-
+  // final _db = Localstore.instance;
+  // final _items = <dynamic, User>{};
+  // StreamSubscription<Map<dynamic, dynamic>>? _subscription;
   void loginChannel() {
     channel.stream.listen((message) {
       final decodedMessage = jsonDecode(message);
@@ -68,14 +67,14 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     // getData();
     //connect to the database
-    _subscription = _db.collection('users').stream.listen((event) {
-      setState(() {
-        final item = User.fromMap(event);
-        _items.putIfAbsent(item.id, () => item);
-        // final _emails = _items.forEach((key, value) {})
-      });
-    });
-    if (kIsWeb) _db.collection('users').stream.asBroadcastStream();
+    // _subscription = _db.collection('favourites').stream.listen((event) {
+    //   setState(() {
+    //     final item = User.fromMap(event);
+    //     // _items.putIfAbsent(item.id, () => item);
+    //     // final _emails = _items.forEach((key, value) {})
+    //   });
+    // });
+    // if (kIsWeb) _db.collection('favourites').stream.asBroadcastStream();
   }
 
   @override

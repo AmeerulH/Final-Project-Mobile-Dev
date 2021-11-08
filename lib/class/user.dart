@@ -1,24 +1,24 @@
 /// Data Users
 class User {
-  final String id;
-  String name;
+  final String author;
+  dynamic posts;
 
   User({
-    required this.id,
-    required this.name,
+    required this.author,
+    required this.posts,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
-      'name': name,
+      'author': author,
+      'posts': posts,
     };
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'],
-      name: map['name'],
+      author: map['author'],
+      posts: map['posts'],
     );
   }
 }

@@ -2,9 +2,12 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localstore/localstore.dart';
 import 'package:sign_up_flutter/about_page.dart';
+import 'package:sign_up_flutter/class/user.dart';
 import 'package:sign_up_flutter/create_post_page.dart';
 import 'package:sign_up_flutter/cubit/main_cubit.dart';
+import 'package:sign_up_flutter/favourites.dart';
 import 'package:sign_up_flutter/post_details.dart';
 import 'package:web_socket_channel/io.dart';
 import 'dart:convert';
@@ -38,11 +41,24 @@ class _MyHomePageState extends State<PostPage> {
   final channel =
       IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
   List posts = [];
+  List favourites = [];
   bool sortType = false;
   dynamic test;
 
+  // final _db = Localstore.instance;
+  // final _items = <dynamic, User>{};
+  // StreamSubscription<Map<dynamic, dynamic>>? _subscription;
+
   var _scrollController = ScrollController();
   var _listCount = 15;
+
+  // late final AnimationController _controller =
+  //     AnimationController(duration: const Duration(seconds: 2), vsync: this);
+
+  // late final Animation<double> _animation = CurvedAnimation(
+  //   parent: _controller,
+  //   curve: Curves.easeIn,
+  // );
 
   void getPosts() {
     channel.stream.listen((message) {
@@ -50,9 +66,9 @@ class _MyHomePageState extends State<PostPage> {
       setState(() {
         posts = decodedMessage['data']['posts'];
         posts.sort((b, a) {
-          var aTitle = a['date'];
-          var bTitle = b['date'];
-          return aTitle.compareTo(bTitle);
+          var aDate = a['date'];
+          var bDate = b['date'];
+          return aDate.compareTo(bDate);
         });
       });
       // print(posts);
@@ -60,8 +76,6 @@ class _MyHomePageState extends State<PostPage> {
 
     channel.sink.add('{"type": "get_posts"}');
   }
-
-  void gPosts() {}
 
   // void deletePost(name, id) {
   //   channel.sink.add('{"type": "sign_in", "data": {"name": "$name"}}');
@@ -78,9 +92,6 @@ class _MyHomePageState extends State<PostPage> {
         });
         sortType = false;
       });
-
-      print(posts);
-      print(sortType);
     } else if (sortType == false) {
       setState(() {
         posts.sort((b, a) {
@@ -90,9 +101,6 @@ class _MyHomePageState extends State<PostPage> {
         });
         sortType = true;
       });
-
-      print(posts);
-      print(sortType);
     }
   }
 
@@ -128,11 +136,21 @@ class _MyHomePageState extends State<PostPage> {
         }
       }
     });
+
+    // _subscription = _db.collection('favourites').stream.listen((event) {
+    //   setState(() {
+    //     final item = User.fromMap(event);
+    //     _items.putIfAbsent(item.author, () => item);
+    //     // final _emails = _items.forEach((key, value) {})
+    //   });
+    // });
+    // if (kIsWeb) _db.collection('favourites').stream.asBroadcastStream();
   }
 
   @override
   void dispose() {
     super.dispose();
+    // _controller.dispose();
     _scrollController.dispose();
   }
 
@@ -247,7 +265,16 @@ class _MyHomePageState extends State<PostPage> {
                               child: IconButton(
                                 icon: const Icon(Icons.favorite),
                                 color: const Color(0XFFAE2012),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => FavouritesPage(
+                                              name: widget.name,
+                                              posts: favourites,
+                                            )),
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -462,11 +489,47 @@ class _MyHomePageState extends State<PostPage> {
                                                                 icon: const Icon(
                                                                     Icons
                                                                         .favorite),
-                                                                color: const Color(
-                                                                    0XFFAE2012),
+                                                                color: favourites
+                                                                        .contains(posts[
+                                                                            index])
+                                                                    ? const Color(
+                                                                        0XFFAE2012)
+                                                                    : Colors
+                                                                        .white,
                                                                 onPressed: () {
+                                                                  // final item = User(
+                                                                  //     author: widget
+                                                                  //         .name,
+                                                                  //     posts: posts[
+                                                                  //         index]);
+                                                                  // item.save();
+                                                                  // _items.putIfAbsent(
+                                                                  //     item
+                                                                  //         .author,
+                                                                  //     () =>
+                                                                  //         item);
+
+                                                                  if (favourites
+                                                                      .contains(
+                                                                          posts[
+                                                                              index])) {
+                                                                    setState(
+                                                                        () {
+                                                                      favourites
+                                                                          .remove(
+                                                                              posts[index]);
+                                                                    });
+                                                                  } else {
+                                                                    setState(
+                                                                        () {
+                                                                      favourites.add(
+                                                                          posts[
+                                                                              index]);
+                                                                    });
+                                                                  }
+
                                                                   print(
-                                                                      'favourite');
+                                                                      favourites);
                                                                 },
                                                               ),
                                                             ),
@@ -496,3 +559,15 @@ class _MyHomePageState extends State<PostPage> {
     );
   }
 }
+
+// extension ExtTodo on User {
+//   Future save() async {
+//     final _db = Localstore.instance;
+//     return _db.collection('favourites').doc(author).set(toMap());
+//   }
+
+//   Future delete() async {
+//     final _db = Localstore.instance;
+//     return _db.collection('favourites').doc(author).delete();
+//   }
+// }
