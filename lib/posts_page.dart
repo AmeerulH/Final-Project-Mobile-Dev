@@ -38,6 +38,16 @@ class PostPage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<PostPage> {
+  //   with SingleTickerProviderStateMixin {
+  // late final AnimationController _controller = AnimationController(
+  //   duration: const Duration(seconds: 2),
+  //   vsync: this,
+  // )..repeat(min: 0, reverse: false);
+  // late final Animation<double> _animation = CurvedAnimation(
+  //   parent: _controller,
+  //   curve: Curves.easeIn,
+  // );
+
   final channel =
       IOWebSocketChannel.connect('ws://besquare-demo.herokuapp.com');
   List posts = [];
@@ -77,10 +87,12 @@ class _MyHomePageState extends State<PostPage> {
     channel.sink.add('{"type": "get_posts"}');
   }
 
-  // void deletePost(name, id) {
-  //   channel.sink.add('{"type": "sign_in", "data": {"name": "$name"}}');
-  //   channel.sink.add('{"type": "delete_post", "data": {"postId": "$id"}}');
-  // }
+  void resetPosts() {}
+
+  void deletePost(_id) {
+    channel.sink.add('{"type": "sign_in", "data": {"name": "${widget.name}"}}');
+    channel.sink.add('{"type": "delete_post", "data": {"postId": "$_id"}}');
+  }
 
   void sortAlpha() {
     if (sortType == true) {
@@ -150,6 +162,7 @@ class _MyHomePageState extends State<PostPage> {
   @override
   void dispose() {
     super.dispose();
+    channel.sink.close();
     // _controller.dispose();
     _scrollController.dispose();
   }
@@ -196,7 +209,6 @@ class _MyHomePageState extends State<PostPage> {
                                 icon: const Icon(Icons.add_box_rounded),
                                 color: Colors.white,
                                 onPressed: () {
-                                  channel.sink.close();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -218,7 +230,6 @@ class _MyHomePageState extends State<PostPage> {
                                 icon: const Icon(Icons.settings),
                                 color: Colors.white,
                                 onPressed: () {
-                                  channel.sink.close();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -313,7 +324,6 @@ class _MyHomePageState extends State<PostPage> {
                                   child: GestureDetector(
                                     onTap: () {
                                       print(posts[index]['author']);
-                                      channel.sink.close();
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -461,23 +471,27 @@ class _MyHomePageState extends State<PostPage> {
                                                                               [
                                                                               'author']
                                                                       ? () {
-                                                                          context
-                                                                              .read<MainCubit>()
-                                                                              .openChannel();
-                                                                          context
-                                                                              .read<MainCubit>()
-                                                                              .login(widget.name);
-                                                                          context
-                                                                              .read<MainCubit>()
-                                                                              .delete(posts[index]['_id']);
-                                                                          channel
-                                                                              .sink
-                                                                              .close();
-                                                                          Navigator
-                                                                              .push(
-                                                                            context,
-                                                                            MaterialPageRoute(builder: (context) => PostPageFinal(name: widget.name)),
-                                                                          );
+                                                                          // context
+                                                                          //     .read<MainCubit>()
+                                                                          //     .openChannel();
+                                                                          // context
+                                                                          //     .read<MainCubit>()
+                                                                          //     .login(widget.name);
+                                                                          // context
+                                                                          //     .read<MainCubit>()
+                                                                          //     .delete(posts[index]['_id']);
+                                                                          deletePost(posts[index]
+                                                                              [
+                                                                              '_id']);
+                                                                          setState(
+                                                                              () {
+                                                                            posts.remove(posts[index]);
+                                                                          });
+                                                                          // Navigator
+                                                                          //     .push(
+                                                                          //   context,
+                                                                          //   MaterialPageRoute(builder: (context) => PostPageFinal(name: widget.name)),
+                                                                          // );
                                                                         }
                                                                       : null),
                                                             ),
